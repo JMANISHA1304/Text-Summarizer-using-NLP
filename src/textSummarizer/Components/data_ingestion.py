@@ -13,22 +13,16 @@ class DataIngestion:
         self.config = config
 
 
+    
     def download_file(self):
         if not os.path.exists(self.config.local_data_file):
-            try:
-                print(f"📥 Downloading from: {self.config.source_url}")
-                with urllib.request.urlopen(self.config.source_url) as response:
-                    if response.status != 200:
-                        raise Exception(f"Failed to download. Status code: {response.status}")
-                    
-                    with open(self.config.local_data_file, 'wb') as out_file:
-                        shutil.copyfileobj(response, out_file)
-                logger.info(f" File downloaded to {self.config.local_data_file}")
-            except Exception as e:
-                logger.error(f" Download failed: {e}")
-                raise e
+            filename, headers = request.urlretrieve(
+                url = self.config.source_URL,
+                filename = self.config.local_data_file
+            )
+            logger.info(f"{filename} download! with following info: \n{headers}")
         else:
-            logger.info(f"File already exists: {get_size(Path(self.config.local_data_file))}")
+            logger.info(f"File already exists of size: {get_size(Path(self.config.local_data_file))}")  
 
         
     
